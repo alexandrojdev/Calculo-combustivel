@@ -1,4 +1,10 @@
 
+/*Fonte utilizada em todo o texto da página.*/
+* {
+  font-family: "Electrolize" ;
+}
+ 
+
 .fundo {
     position: fixed;
     top: 0;
@@ -12,8 +18,12 @@
     z-index: -1;
 }
 
+h2 {
+  color: #054479;
+  font-size: 35px;
+}
+
 header {
-    font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -38,11 +48,27 @@ header {
     padding: 8px;
     width: 80%;
   }
+
+  /* Estilização do botão "próximo" da página do código.*/
   button {
     padding: 10px 20px;
     cursor: pointer;
+    color: #ffff;
+   background-color: #054479;
+   border-radius: 10px;
+   font-size: 17px ;
+  }
+
+  button:hover {
+    background-color: #ffff;
+    color: #054479;
   }
 
   footer {
-    background-color: aliceblue;
-  }
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #054479;
+    color: white;
+    text-align: center;  }
