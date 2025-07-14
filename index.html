@@ -28,14 +28,14 @@
 <!-- Tela 2 -->
 <div class="container" id="form-postos" style="display:none;">
   <h2>Informe o preço nos postos</h2>
-  <form id="postos-form"></form>
-  <button onclick="calcular()">Calcular</button>
+  <form id="postos-form"></form> <!-- Formulário onde serão criados os inputs para preços -->
+  <button onclick="calcular()">Calcular</button> <!-- Botão para calcular os resultados -->
 </div>
 
 <!-- Tela 3 -->
 <div class="container" id="resultado" style="display:none;">
   <h2>Resultados</h2>
-  <div id="resultados"></div>
+  <div id="resultados"></div>  <!-- Área onde os resultados serão exibidos -->
 </div>
 </header>
 
@@ -44,28 +44,34 @@
 <script>
 // Função para mostrar inputs dos postos
 function mostrarPostos() {
+      // Lê os valores digitados pelo usuário e transforma em números
   const distancia = parseFloat(document.getElementById("distancia").value);
   const consumo = parseFloat(document.getElementById("consumo").value);
   const numPostos = parseInt(document.getElementById("postos").value);
 
+    //VERIFICAÇÃO para evitar NaN ou valores inválidos
   if (isNaN(distancia) || isNaN(consumo) || isNaN(numPostos) ||
       distancia <= 0 || consumo <= 0 || numPostos <= 0) {
+    // Se qualquer campo estiver errado, mostra alerta e para aqui
     alert("Por favor, preencha todos os campos corretamente.");
-    return;
+    return;  // interrompe a execução da função
   }
 
-  // Salva os dados iniciais para uso depois
+  //Se tudo válido, salva no sessionStorage para usar depois
   sessionStorage.setItem("distancia", distancia);
   sessionStorage.setItem("consumo", consumo);
   sessionStorage.setItem("numPostos", numPostos);
 
-  // Esconde primeira tela, mostra inputs para preços
+  // Esconde a primeira tela
   document.getElementById("form-dados").style.display = "none";
+    // Mostra a tela para inserir os preços dos postos
   document.getElementById("form-postos").style.display = "block";
 
+    // Cria dinamicamente os campos para os preços dos postos
   const postosForm = document.getElementById("postos-form");
-  postosForm.innerHTML = ""; // limpa se já havia
+  postosForm.innerHTML = ""; // limpa se já havia antes
 
+    // Cria um input numérico para cada posto
   for (let i = 1; i <= numPostos; i++) {
     const input = document.createElement("input");
     input.type = "number";
@@ -83,23 +89,27 @@ function calcular() {
   const consumo = parseFloat(sessionStorage.getItem("consumo"));
   const numPostos = parseInt(sessionStorage.getItem("numPostos"));
 
-  let precoGasolina = [];
-  let somaPrecos = 0;
-  let menorPreco = Number.MAX_VALUE;
+  let precoGasolina = [];  // array para armazenar os preços digitados
+  let somaPrecos = 0; // soma dos preços para calcular média
+  let menorPreco = Number.MAX_VALUE; // começa com o maior número possível para achar o menor
 
+   // Percorre todos os postos para coletar os preços
   for (let i = 1; i <= numPostos; i++) {
     const preco = parseFloat(document.getElementById(`preco${i}`).value);
     if (isNaN(preco) || preco <= 0) {
       alert(`Por favor, preencha corretamente o preço do posto ${i}.`);
       return;
     }
-    precoGasolina.push(preco);
-    somaPrecos += preco;
-    if (preco < menorPreco) menorPreco = preco;
+    precoGasolina.push(preco); // adiciona ao array
+    somaPrecos += preco; // acumula na soma
+    if (preco < menorPreco) menorPreco = preco; // atualiza o menor preço
   }
 
+    // Calcula litros necessários para a ida
   const consumoNecessarioLitros = distancia / consumo;
+    // Calcula média dos preços
   const mediaPrecos = somaPrecos / numPostos;
+    // Calcula gasto diário ida e volta considerando o menor preço
   const gastoDiario = 2 * (consumoNecessarioLitros * menorPreco);
 
   // Mostra resultados

@@ -1,0 +1,22 @@
+A solução para saída do "Nan" foi utilizar o isNaN pois ele verifica se algum dos valores não é um número válido.
+Também faz a testagem se há valor menor ou igual a zero, e sendo qualquer condição verdeira aparecerá um alert para o usuário,
+já que ele foi feito dentro de uma função. Com o IsNaN, garante que valores incorretos sejam salvos na "sessionStorage".
+
+No link do StackOverflow, os comentários explicam que NaN em JavaScript significa “Not a Number” e é um valor especial, 
+já que até mesmo NaN === NaN dá falso. Para verificar se algo é NaN, o ideal é usar isNaN() ou, de preferência, Number.isNaN(),
+ que é mais confiável e evita conversões inesperadas.
+
+Para evitar NaN ao usar parseFloat(), é importante garantir que a entrada comece com um número válido. 
+Caso contrário, sempre teste o resultado com isNaN() ou valide a string antes. 
+Assim, você evita cálculos incorretos e mensagens de erro.
+
+Um exemplo de como utilizar o parseFloat sem retornar o NaN, seria realizar validação antes de usar:
+
+const entrada = "abc";
+const valor = parseFloat(entrada);
+
+if (!isNaN(valor)) {
+    console.log("Número válido:", valor);
+} else {
+    console.log("Entrada inválida");
+}
