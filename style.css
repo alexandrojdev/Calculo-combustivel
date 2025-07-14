@@ -1,0 +1,74 @@
+
+/*Fonte utilizada em todo o texto da página.*/
+* {
+  font-family: "Electrolize" ;
+}
+ 
+
+.fundo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url(/images/imagem_fundo.png);
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px);
+    z-index: -1;
+}
+
+h2 {
+  color: #054479;
+  font-size: 35px;
+}
+
+header {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+
+  .container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+  }
+  input {
+    display: block;
+    margin: 10px auto;
+    padding: 8px;
+    width: 80%;
+  }
+
+  /* Estilização do botão "próximo" da página do código.*/
+  button {
+    padding: 10px 20px;
+    cursor: pointer;
+    color: #ffff;
+   background-color: #054479;
+   border-radius: 10px;
+   font-size: 17px ;
+  }
+
+  button:hover {
+    background-color: #ffff;
+    color: #054479;
+  }
+
+  footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #054479;
+    color: white;
+    text-align: center;  }

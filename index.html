@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Electrolize&display=swap" rel="stylesheet">
+<link href="style.css" rel="stylesheet">
+<title>Calculo Combustível</title>
+
+</head>
+<body>
+<div class="fundo"></div>
+
+<header>
+
+<!-- Tela 1 -->
+<div class="container" id="form-dados">
+  <h2>Informe os dados</h2>
+  <input type="number" id="distancia" placeholder="Distância até o trabalho (km)">
+  <input type="number" id="consumo" placeholder="Consumo médio do veículo (km/L)">
+  <input type="number" id="postos" placeholder="Quantos postos pesquisou?">
+  <button onclick="mostrarPostos()">Próximo</button>
+</div>
+
+<!-- Tela 2 -->
+<div class="container" id="form-postos" style="display:none;">
+  <h2>Informe o preço nos postos</h2>
+  <form id="postos-form"></form>
+  <button onclick="calcular()">Calcular</button>
+</div>
+
+<!-- Tela 3 -->
+<div class="container" id="resultado" style="display:none;">
+  <h2>Resultados</h2>
+  <div id="resultados"></div>
+</div>
+</header>
+
+
+
+<script>
+// Função para mostrar inputs dos postos
+function mostrarPostos() {
+  const distancia = parseFloat(document.getElementById("distancia").value);
+  const consumo = parseFloat(document.getElementById("consumo").value);
+  const numPostos = parseInt(document.getElementById("postos").value);
+
+  if (isNaN(distancia) || isNaN(consumo) || isNaN(numPostos) ||
+      distancia <= 0 || consumo <= 0 || numPostos <= 0) {
+    alert("Por favor, preencha todos os campos corretamente.");
+    return;
+  }
+
+  // Salva os dados iniciais para uso depois
+  sessionStorage.setItem("distancia", distancia);
+  sessionStorage.setItem("consumo", consumo);
+  sessionStorage.setItem("numPostos", numPostos);
+
+  // Esconde primeira tela, mostra inputs para preços
+  document.getElementById("form-dados").style.display = "none";
+  document.getElementById("form-postos").style.display = "block";
+
+  const postosForm = document.getElementById("postos-form");
+  postosForm.innerHTML = ""; // limpa se já havia
+
+  for (let i = 1; i <= numPostos; i++) {
+    const input = document.createElement("input");
+    input.type = "number";
+    input.min = "0";
+    input.step = "0.01";
+    input.placeholder = `Preço no posto ${i} (R$)`;
+    input.id = `preco${i}`;
+    postosForm.appendChild(input);
+  }
+}
+
+// Função para calcular resultados
+function calcular() {
+  const distancia = parseFloat(sessionStorage.getItem("distancia"));
+  const consumo = parseFloat(sessionStorage.getItem("consumo"));
+  const numPostos = parseInt(sessionStorage.getItem("numPostos"));
+
+  let precoGasolina = [];
+  let somaPrecos = 0;
+  let menorPreco = Number.MAX_VALUE;
+
+  for (let i = 1; i <= numPostos; i++) {
+    const preco = parseFloat(document.getElementById(`preco${i}`).value);
+    if (isNaN(preco) || preco <= 0) {
+      alert(`Por favor, preencha corretamente o preço do posto ${i}.`);
+      return;
+    }
+    precoGasolina.push(preco);
+    somaPrecos += preco;
+    if (preco < menorPreco) menorPreco = preco;
+  }
+
+  const consumoNecessarioLitros = distancia / consumo;
+  const mediaPrecos = somaPrecos / numPostos;
+  const gastoDiario = 2 * (consumoNecessarioLitros * menorPreco);
+
+  // Mostra resultados
+  document.getElementById("form-postos").style.display = "none";
+  document.getElementById("resultado").style.display = "block";
+
+  const resultadosDiv = document.getElementById("resultados");
+  resultadosDiv.innerHTML = `
+    O consumo necessário é <strong>${consumoNecessarioLitros.toFixed(2)}</strong> litros.<br>
+    O menor preço de combustível encontrado foi: <strong>R$ ${menorPreco.toFixed(2)}</strong><br>
+    A média dos preços pesquisados foi: <strong>R$ ${mediaPrecos.toFixed(2)}</strong><br>
+    O gasto diário com base no menor preço é: <strong>R$ ${gastoDiario.toFixed(2)}</strong>
+  `;
+}
+</script>
+<footer>
+    <div class="rodope">
+    <h3>Projeto FordEnter 2025. Sistema desenvolvido por Alexandro Jesus</h3>
+    </div>
+</footer>
+</body>
+</html>
+
