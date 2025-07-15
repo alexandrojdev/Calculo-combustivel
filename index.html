@@ -9,7 +9,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Electrolize&display=swap" rel="stylesheet">
 <link href="style.css" rel="stylesheet">
 <title>Calculo Combustível</title>
-
 </head>
 <body>
 <div class="fundo"></div>
@@ -28,91 +27,82 @@
 <!-- Tela 2 -->
 <div class="container" id="form-postos" style="display:none;">
   <h2>Informe o preço nos postos</h2>
-  <form id="postos-form"></form> <!-- Formulário onde serão criados os inputs para preços -->
-  <button onclick="calcular()">Calcular</button> <!-- Botão para calcular os resultados -->
+  <div id="postos-form">
+    <input type="number" id="precoAtual" min="0" step="0.01" placeholder="Preço no posto 1 (R$)">
+    <button onclick="proximoPreco()">Próximo</button>
+  </div>
 </div>
 
 <!-- Tela 3 -->
 <div class="container" id="resultado" style="display:none;">
   <h2>Resultados</h2>
-  <div id="resultados"></div>  <!-- Área onde os resultados serão exibidos -->
+  <div id="resultados"></div>
 </div>
 </header>
 
-
-
 <script>
-// Função para mostrar inputs dos postos
+let numPostos;
+let precoGasolina = [];
+let postoAtual = 1;
+
 function mostrarPostos() {
-      // Lê os valores digitados pelo usuário e transforma em números
   const distancia = parseFloat(document.getElementById("distancia").value);
   const consumo = parseFloat(document.getElementById("consumo").value);
-  const numPostos = parseInt(document.getElementById("postos").value);
+  numPostos = parseInt(document.getElementById("postos").value);
 
-    //VERIFICAÇÃO para evitar NaN ou valores inválidos
   if (isNaN(distancia) || isNaN(consumo) || isNaN(numPostos) ||
       distancia <= 0 || consumo <= 0 || numPostos <= 0) {
-    // Se qualquer campo estiver errado, mostra alerta e para aqui
     alert("Por favor, preencha todos os campos corretamente.");
-    return;  // interrompe a execução da função
+    return;
   }
 
-  //Se tudo válido, salva no sessionStorage para usar depois
   sessionStorage.setItem("distancia", distancia);
   sessionStorage.setItem("consumo", consumo);
   sessionStorage.setItem("numPostos", numPostos);
 
-  // Esconde a primeira tela
   document.getElementById("form-dados").style.display = "none";
-    // Mostra a tela para inserir os preços dos postos
   document.getElementById("form-postos").style.display = "block";
 
-    // Cria dinamicamente os campos para os preços dos postos
-  const postosForm = document.getElementById("postos-form");
-  postosForm.innerHTML = ""; // limpa se já havia antes
+  document.getElementById("precoAtual").placeholder = `Preço no posto ${postoAtual} (R$)`;
+  precoGasolina = [];
+}
 
-    // Cria um input numérico para cada posto
-  for (let i = 1; i <= numPostos; i++) {
-    const input = document.createElement("input");
-    input.type = "number";
-    input.min = "0";
-    input.step = "0.01";
-    input.placeholder = `Preço no posto ${i} (R$)`;
-    input.id = `preco${i}`;
-    postosForm.appendChild(input);
+function proximoPreco() {
+  const precoInput = document.getElementById("precoAtual");
+  const preco = parseFloat(precoInput.value);
+
+  if (isNaN(preco) || preco <= 0) {
+    alert(`Por favor, preencha corretamente o preço do posto ${postoAtual}.`);
+    return;
+  }
+
+  precoGasolina.push(preco);
+
+  if (postoAtual < numPostos) {
+    postoAtual++;
+    precoInput.value = "";
+    precoInput.placeholder = `Preço no posto ${postoAtual} (R$)`;
+  } else {
+    calcular();
   }
 }
 
-// Função para calcular resultados
 function calcular() {
   const distancia = parseFloat(sessionStorage.getItem("distancia"));
   const consumo = parseFloat(sessionStorage.getItem("consumo"));
-  const numPostos = parseInt(sessionStorage.getItem("numPostos"));
 
-  let precoGasolina = [];  // array para armazenar os preços digitados
-  let somaPrecos = 0; // soma dos preços para calcular média
-  let menorPreco = Number.MAX_VALUE; // começa com o maior número possível para achar o menor
+  let somaPrecos = 0;
+  let menorPreco = Number.MAX_VALUE;
 
-   // Percorre todos os postos para coletar os preços
-  for (let i = 1; i <= numPostos; i++) {
-    const preco = parseFloat(document.getElementById(`preco${i}`).value);
-    if (isNaN(preco) || preco <= 0) {
-      alert(`Por favor, preencha corretamente o preço do posto ${i}.`);
-      return;
-    }
-    precoGasolina.push(preco); // adiciona ao array
-    somaPrecos += preco; // acumula na soma
-    if (preco < menorPreco) menorPreco = preco; // atualiza o menor preço
-  }
+  precoGasolina.forEach(preco => {
+    somaPrecos += preco;
+    if (preco < menorPreco) menorPreco = preco;
+  });
 
-    // Calcula litros necessários para a ida
   const consumoNecessarioLitros = distancia / consumo;
-    // Calcula média dos preços
   const mediaPrecos = somaPrecos / numPostos;
-    // Calcula gasto diário ida e volta considerando o menor preço
   const gastoDiario = 2 * (consumoNecessarioLitros * menorPreco);
 
-  // Mostra resultados
   document.getElementById("form-postos").style.display = "none";
   document.getElementById("resultado").style.display = "block";
 
@@ -125,6 +115,7 @@ function calcular() {
   `;
 }
 </script>
+
 <footer>
     <div class="rodope">
     <h3>Projeto FordEnter 2025. Sistema desenvolvido por Alexandro Jesus</h3>
@@ -132,4 +123,3 @@ function calcular() {
 </footer>
 </body>
 </html>
-
